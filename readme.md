@@ -16,11 +16,20 @@
 ```bash
 $ sheetpilot-cli --get-endpoints
 
+[LIVE PRODUCTION ENDPOINTS]
+[+] STREAMLIT CONTROL ROOM (Ops Dashboard)   --> https://sheetpilotai.streamlit.app/
+[+] FASTAPI BACKEND GATEWAY (API & Swagger)  --> https://sheetpilotai.onrender.com/docs
+[+] FASTAPI HEALTH CHECK (Backend Status)   --> https://sheetpilotai.onrender.com/health
+
+[LOCAL DEV ENDPOINTS]
 [+] NEXT.JS VOICE STUDIO (Client Interface)  --> http://localhost:3000
 [+] STREAMLIT CONTROL ROOM (Ops Dashboard)  --> http://localhost:8501
 [+] FASTAPI BACKEND GATEWAY (API & Docs)    --> http://localhost:8000/docs
 [+] DATABASE GUI (pgAdmin 4 Control Panel)  --> http://localhost:5050
 ```
+
+> ⚠️ **Important Note on Initial Request Latency (Render Free Tier):**
+> The backend server is hosted on Render's free tier. Render automatically puts inactive services to sleep after 15 minutes. **When submitting a file upload or natural language query for the first time, please allow up to 1 to 5 minutes for the backend instance to spin up**, initialize database connections, and prepare the execution sandbox. Subsequent requests will execute with sub-second latency.
 
 ---
 
