@@ -44,7 +44,7 @@ class SheetPilotAPIClient:
             return False, {"error": f"File upload request failed: {str(e)}"}
 
     @staticmethod
-    def generate_plan(file_id: str, prompt: str, timeout: int = 30) -> Tuple[bool, Dict[str, Any]]:
+    def generate_plan(file_id: str, prompt: str, timeout: int = 120) -> Tuple[bool, Dict[str, Any]]:
         """Sends file_id and user prompt to /api/v1/agent/plan endpoint."""
         base_url = SheetPilotAPIClient.get_base_url()
         try:

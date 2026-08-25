@@ -1,4 +1,6 @@
+# pyright: ignore [reportMissingImports]
 from fastapi import FastAPI
+# pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import time
@@ -72,5 +74,6 @@ async def health_check():
     }
 
 if __name__ == "__main__":
+    # pyright: ignore [reportMissingImports]
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
