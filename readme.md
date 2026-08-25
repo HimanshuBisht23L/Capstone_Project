@@ -78,47 +78,66 @@ The system features a **Dual-Frontend Architecture**:
 ### End-to-End Execution Flow (Mermaid Diagram)
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor User as User / Analyst
-    participant FE as Next.js / Streamlit
-    participant API as FastAPI Gateway
-    participant AI as AIService (Gemini / NLP)
-    participant CG as CodeGenService
-    participant AST as AST Security Auditor
-    participant SB as Sandbox Subprocess Runner
-    participant DB as PostgreSQL DB
+graph TD
+    Root["🚀 SheetPilot AI End-to-End Execution Architecture"]
 
-    User->>FE: Upload File (.xlsx) & Voice / Text Prompt
-    FE->>API: POST /api/v1/files/upload
-    API->>API: Auto-detect header row & column dtypes
-    API-->>FE: Return file_id & Extracted Schema JSON
+    %% Node 1: User & Client Interface Layer
+    Root --> UI["1. User & Client Interface Layer"]
+    UI --> UI_FE["Next.js 14 Interactive Studio (http://localhost:3000)"]
+    UI --> UI_ST["Streamlit Operations Control Room (http://localhost:8501)"]
+    
+    UI_FE --> FE_A["File Upload Dropzone (.xlsx, .xls, .csv up to 50MB)"]
+    UI_FE --> FE_B["Browser Web Speech API Voice Controller"]
+    UI_FE --> FE_C["Interactive Prompt & Quick Suggestion Pills"]
 
-    FE->>API: POST /api/v1/agent/plan {file_id, prompt}
-    API->>AI: generate_action_plan(prompt, schema)
-    AI-->>API: Return Pydantic ActionPlanPayload
-    API->>CG: generate_pandas_script(plan, input_path)
-    CG-->>API: Return Synthesized Python Script
-    API->>DB: Save AgentRequest & DBActionPlan records
-    API-->>FE: Return Plan & Generated Code
+    UI_ST --> ST_A["10-Benchmark Dataset Suite Selector (docs/test_datasets/)"]
+    UI_ST --> ST_B["Ground-Truth Tabular Inspector (st.data_editor)"]
+    UI_ST --> ST_C["AST Security Audit & Failure Tracing Sandbox"]
 
-    FE->>API: POST /api/v1/jobs/execute {file_id, plan_id}
-    API->>AST: verify_code_security(python_code)
-    alt Security AST Violation
-        AST-->>API: Raise SecurityError (Blocked Module / Builtin)
-        API-->>FE: HTTP 400 Security Violation Response
-    else Safe AST Code
-        AST-->>API: Security Verification Passed
-        API->>SB: execute_in_sandbox(script, timeout=10s)
-        SB->>SB: Execute isolated child process & compute differential
-        SB-->>API: Return Success, Transformed Storage Key, Latency & Diff Summary
-        API->>DB: Save ExecutionJob ORM Record
-        API-->>FE: Return Job Execution Results & Differential Metrics
-    end
+    %% Node 2: FastAPI Gateway Layer
+    Root --> API["2. FastAPI Web Gateway & Router (http://localhost:8000)"]
+    API --> API_UP["POST /api/v1/files/upload"]
+    API --> API_PL["POST /api/v1/agent/plan"]
+    API --> API_EX["POST /api/v1/jobs/execute & GET /api/v1/jobs/{job_id}"]
+    API --> API_DL["GET /api/v1/jobs/results/{job_id}/download"]
 
-    User->>FE: Click Download Transformed File
-    FE->>API: GET /api/v1/jobs/results/{job_id}/download
-    API-->>User: Binary Stream (.xlsx download)
+    %% Node 3: Phase 1 Ingestion & Schema Extraction
+    API_UP --> P1["Phase 1: Workbook Ingestion & Schema Extraction"]
+    P1 --> P1_A["SpreadsheetService.extract_workbook_schema()"]
+    P1_A --> P1_A1["Header Auto-Detection (_detect_header_row)"]
+    P1_A --> P1_A2["Data Type Standardizer (string, float64, int64, boolean)"]
+    P1_A --> P1_A3["Non-Null Sample Values Extraction"]
+    P1 --> P1_B["File Persistence & DB Metadata"]
+    P1_B --> P1_B1["Save Raw File to backend/storage/{file_uuid}.xlsx"]
+    P1_B --> P1_B2["Persist File Metadata Record in PostgreSQL / SQLite"]
+
+    %% Node 4: Phase 2 AI Planning & Code Generation
+    API_PL --> P2["Phase 2: Natural Language AI Planning & Code Synthesis"]
+    P2 --> P2_AI["AIService Engine"]
+    P2_AI --> P2_AI1["Google Gemini API Call (gemini-2.5-flash / 1.5-flash)"]
+    P2_AI --> P2_AI2["Rule-Based Deterministic NLP Fallback Parser"]
+    P2_AI --> P2_AI3["Zero-Hallucination Column Constraint Verifier"]
+    P2 --> P2_CG["CodeGenService Engine"]
+    P2_CG --> P2_CG1["Pydantic ActionPlanPayload Synthesis"]
+    P2_CG --> P2_CG2["Synthesizes Executable Pandas & OpenPyXL Python Code"]
+
+    %% Node 5: Phase 3 AST Audit & Sandbox Execution
+    API_EX --> P3["Phase 3: AST Security Audit & Subprocess Sandbox Execution"]
+    P3 --> P3_AST["Static AST Security Auditor"]
+    P3_AST --> P3_AST1["SecurityASTVisitor Scan"]
+    P3_AST1 --> AST_Pass["✅ Passed: Safe Python Abstract Syntax Tree"]
+    P3_AST1 --> AST_Fail["❌ Blocked: Security Error (Forbidden os, sys, eval)"]
+    P3 --> P3_SB["SandboxRunner Execution Engine"]
+    P3_SB --> P3_SB1["Isolated Child Subprocess (10-Second Timeout Limit)"]
+    P3_SB --> P3_SB2["Multi-Sheet Execution (sheets_dict Container)"]
+    P3_SB --> P3_SB3["Differential Metrics Calculation (_calculate_diff)"]
+    P3_SB --> P3_SB4["Save Transformed Output to storage/transformed_{id}.xlsx"]
+
+    %% Node 6: Phase 4 Result Inspection & Download
+    API_DL --> P4["Phase 4: Inspection Telemetry & File Download"]
+    P4 --> P4_A["Cell Differential Metrics Display (Rows Delta, Modified Sheets)"]
+    P4 --> P4_B["Execution Latency Telemetry (Subprocess Runtime in ms)"]
+    P4 --> P4_C["Binary Stream Workbook Download (HTTP 200 File Attachment)"]
 ```
 
 ---
