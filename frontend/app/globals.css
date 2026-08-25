@@ -1,48 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @layer base {
   :root {
-    --bg-space: #090d16;
-    --card-surface: rgba(15, 23, 42, 0.75);
+    --bg-space: #07090e;
+    --card-surface: rgba(13, 18, 30, 0.75);
+    --card-surface-hover: rgba(20, 28, 46, 0.85);
     --border-glass: rgba(255, 255, 255, 0.08);
-    --accent-violet: #818cf8;
+    --border-glass-hover: rgba(56, 189, 248, 0.3);
     --accent-cyan: #38bdf8;
+    --accent-violet: #818cf8;
     --accent-purple: #c084fc;
+    --accent-emerald: #34d399;
+  }
+
+  * {
+    border-color: var(--border-glass);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    color-scheme: dark;
   }
 
   body {
     background-color: var(--bg-space);
+    background-image:
+      radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.07) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(129, 140, 248, 0.07) 0px, transparent 50%),
+      radial-gradient(at 50% 100%, rgba(192, 132, 252, 0.05) 0px, transparent 50%);
+    background-attachment: fixed;
     color: #f8fafc;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
+
+  code,
+  pre,
+  kbd,
+  samp {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Background Ambient Grid Pattern */
+.bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
 
 /* Glassmorphism Surface Container */
 .glass-panel {
   background: var(--card-surface);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-glass);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel:hover {
+  background: var(--card-surface-hover);
 }
 
 /* Vibrant Gradient Text */
 .gradient-text {
-  background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-violet) 50%, var(--accent-purple) 100%);
+  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 45%, #c084fc 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-emerald {
+  background: linear-gradient(135deg, #34d399 0%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glowing Border & Shadow utilities */
+.glow-on-hover {
+  transition: all 0.3s ease;
+}
+
+.glow-on-hover:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  box-shadow: 0 0 25px -5px rgba(56, 189, 248, 0.2), 0 0 0 1px rgba(56, 189, 248, 0.15);
 }
 
 /* Active Recording Pulse Animation */
 @keyframes pulse-ring {
   0% {
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6);
   }
 
   70% {
-    box-shadow: 0 0 0 14px rgba(239, 68, 68, 0);
+    box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
   }
 
   100% {
@@ -51,11 +108,24 @@
 }
 
 .recording-pulse {
-  animation: pulse-ring 1.5s infinite;
+  animation: pulse-ring 1.5s infinite ease-in-out;
 }
 
-/* Glowing Border on Hover */
-.glow-on-hover:hover {
-  border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #07090e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
 }

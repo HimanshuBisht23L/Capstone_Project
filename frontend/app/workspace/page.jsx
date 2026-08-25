@@ -6,7 +6,7 @@ import Dropzone from "../components/Dropzone";
 import SchemaCard from "../components/SchemaCard";
 import PlanCard from "../components/PlanCard";
 import DiffViewer from "../components/DiffViewer";
-import { Sparkles, RefreshCw, AlertCircle, ArrowLeft } from "lucide-react";
+import { Sparkles, RefreshCw, AlertCircle, ArrowLeft, Terminal, Cpu } from "lucide-react";
 import Link from "next/link";
 
 export default function WorkspaceStudioPage() {
@@ -152,9 +152,9 @@ export default function WorkspaceStudioPage() {
     };
 
     return (
-        <div className="flex flex-col gap-8 py-8 max-w-7xl mx-auto px-4 pb-20">
+        <div className="flex flex-col gap-8 py-8 max-w-7xl mx-auto px-4 pb-20 relative">
             {/* Studio Navigation & Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <Link
                     href="/"
                     className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-cyan-400 transition"
@@ -163,14 +163,17 @@ export default function WorkspaceStudioPage() {
                     <span>Back to Home</span>
                 </Link>
 
-                <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-xs font-bold text-cyan-300">
-                    SheetPilot Interactive Studio
-                </span>
+                <div className="flex items-center gap-2">
+                    <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-xs font-bold text-cyan-300 flex items-center gap-1.5">
+                        <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+                        SheetPilot Interactive Studio
+                    </span>
+                </div>
             </div>
 
             {/* Global Error Banner */}
             {errorMsg && (
-                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm flex items-start gap-3">
+                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm flex items-start gap-3 shadow-lg">
                     <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
                     <span>{errorMsg}</span>
                 </div>
@@ -179,7 +182,7 @@ export default function WorkspaceStudioPage() {
             {/* Step 1: Upload Dropzone */}
             <div className="flex flex-col gap-3">
                 <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                    <span className="h-5 w-5 rounded-full bg-cyan-500/20 text-cyan-400 text-xs flex items-center justify-center font-bold">1</span>
+                    <span className="h-6 w-6 rounded-full bg-cyan-500/20 text-cyan-400 text-xs flex items-center justify-center font-bold border border-cyan-500/30">1</span>
                     Select or Drop Spreadsheet Workbook
                 </h2>
                 <Dropzone
@@ -194,10 +197,10 @@ export default function WorkspaceStudioPage() {
 
             {/* Step 2: Prompt Input & Voice Controls */}
             {schema && (
-                <div className="glass-panel rounded-2xl p-6 border border-white/10 flex flex-col gap-4">
-                    <div className="flex items-center justify-between">
+                <div className="glass-panel rounded-2xl p-6 sm:p-8 border border-white/10 flex flex-col gap-5 shadow-xl">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                            <span className="h-5 w-5 rounded-full bg-indigo-500/20 text-indigo-400 text-xs flex items-center justify-center font-bold">2</span>
+                            <span className="h-6 w-6 rounded-full bg-indigo-500/20 text-indigo-400 text-xs flex items-center justify-center font-bold border border-indigo-500/30">2</span>
                             Enter Natural Language Instruction
                         </h2>
 
@@ -208,15 +211,15 @@ export default function WorkspaceStudioPage() {
                         <textarea
                             value={prompt}
                             onChange={(e) => setPrompt(e.target.value)}
-                            placeholder="e.g. Filter rows where Marks > 80, sort by Student_Name ascending, and calculate calculated column."
+                            placeholder="e.g. Filter rows where Marks > 80, sort by Student_Name ascending, and calculate summary."
                             rows={3}
-                            className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/60 transition resize-none"
+                            className="w-full p-4 rounded-xl bg-[#07090e] border border-slate-800 text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/60 transition resize-none leading-relaxed font-sans"
                         />
                     </div>
 
                     {/* Quick Prompt Pills */}
                     <div className="flex flex-wrap items-center gap-2 pt-1">
-                        <span className="text-xs text-slate-500">Quick Prompts:</span>
+                        <span className="text-xs text-slate-500 font-medium">Quick Prompts:</span>
                         {[
                             "Filter students with Marks > 80",
                             "Sort table by Student_Name ascending",
@@ -224,8 +227,9 @@ export default function WorkspaceStudioPage() {
                         ].map((qp) => (
                             <button
                                 key={qp}
+                                type="button"
                                 onClick={() => setPrompt(qp)}
-                                className="text-xs px-2.5 py-1 rounded-lg bg-slate-800/60 hover:bg-slate-800 text-slate-300 border border-slate-700 transition"
+                                className="text-xs px-3 py-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 text-slate-300 border border-slate-700/80 hover:border-cyan-500/40 transition"
                             >
                                 {qp}
                             </button>
@@ -236,11 +240,11 @@ export default function WorkspaceStudioPage() {
                         type="button"
                         onClick={handleGeneratePlan}
                         disabled={generatingPlan}
-                        className="w-full py-3.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2 transition disabled:opacity-50 mt-2"
+                        className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-sm shadow-lg shadow-indigo-500/20 flex items-center justify-center gap-2.5 transition-all disabled:opacity-50 mt-2"
                     >
                         {generatingPlan ? (
                             <>
-                                <RefreshCw className="h-4 w-4 animate-spin" />
+                                <RefreshCw className="h-4 w-4 animate-spin text-white" />
                                 <span>Synthesizing AI Action Plan...</span>
                             </>
                         ) : (
@@ -272,3 +276,4 @@ export default function WorkspaceStudioPage() {
         </div>
     );
 }
+

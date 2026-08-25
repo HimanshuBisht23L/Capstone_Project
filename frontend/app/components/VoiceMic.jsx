@@ -86,14 +86,14 @@ export default function VoiceMic({ onTranscriptChange }) {
             <button
                 type="button"
                 onClick={toggleRecording}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all ${isRecording
-                    ? "bg-red-500/20 text-red-400 border border-red-500/40 recording-pulse"
-                    : "bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30"
+                className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md ${isRecording
+                    ? "bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/40 recording-pulse shadow-red-500/20"
+                    : "bg-gradient-to-r from-indigo-600/30 to-purple-600/30 hover:from-indigo-600/40 hover:to-purple-600/40 text-indigo-200 border border-indigo-500/40 hover:border-indigo-400/60 shadow-indigo-500/10"
                     }`}
             >
                 {isRecording ? (
                     <>
-                        <MicOff className="h-4 w-4 animate-bounce text-red-400" />
+                        <MicOff className="h-4 w-4 animate-pulse text-red-400" />
                         <span>Listening... (Click to Stop)</span>
                     </>
                 ) : (
@@ -105,7 +105,7 @@ export default function VoiceMic({ onTranscriptChange }) {
             </button>
 
             {errorMsg && (
-                <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs mt-1">
+                <div className="flex items-start gap-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs mt-1">
                     <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                     <span>{errorMsg}</span>
                 </div>
@@ -113,3 +113,4 @@ export default function VoiceMic({ onTranscriptChange }) {
         </div>
     );
 }
+
