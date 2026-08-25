@@ -29,7 +29,8 @@ export default function LandingPage() {
           </Link>
 
           <a
-            href="http://localhost:8501"
+            href="https://sheetpilotai.streamlit.app/"
+            // href="http://localhost:8501"
             target="_blank"
             rel="noreferrer"
             className="w-full sm:w-auto px-7 py-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-bold text-sm flex items-center justify-center gap-2 transition"

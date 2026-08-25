@@ -35,7 +35,9 @@ export default function RootLayout({ children }) {
               Workspace Studio
             </Link>
             <a
-              href="http://localhost:8501"
+              // href="http://localhost:8501"
+
+              href="https://sheetpilotai.streamlit.app/"
               target="_blank"
               rel="noreferrer"
               className="hover:text-cyan-400 transition flex items-center gap-1"
@@ -70,7 +72,8 @@ export default function RootLayout({ children }) {
             <div className="flex items-center gap-4">
               <Link href="/" className="hover:text-slate-400">Home</Link>
               <Link href="/workspace" className="hover:text-slate-400">Workspace</Link>
-              <a href="http://localhost:8501" target="_blank" rel="noreferrer" className="hover:text-slate-400">Control Room</a>
+              {/* <a href="http://localhost:8501" target="_blank" rel="noreferrer" className="hover:text-slate-400">Control Room</a> */}
+              <a href="https://sheetpilotai.streamlit.app/" target="_blank" rel="noreferrer" className="hover:text-slate-400">Control Room</a>
             </div>
           </div>
         </footer>
