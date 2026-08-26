@@ -177,38 +177,50 @@ def main():
             with st.spinner("Executing script in isolated python subprocess sandbox..."):
                 exec_success, exec_resp = SheetPilotAPIClient.execute_job(active_plan_id)
                 
+
+                # Streamlit Polling Loop Implementation
                 if exec_success:
                     job_id = exec_resp.get("job_id")
                     st.session_state.active_job_id = job_id
                     
-                    # Poll Status
-                    poll_success, status_resp = SheetPilotAPIClient.poll_job_status(job_id)
+                    # Poll status until job terminates or times out
+                    import time
+                    max_retries = 60  # 30 seconds total (60 * 0.5s)
+                    poll_count = 0
+                    final_status_resp = {}
                     
-                    if poll_success:
-                        status = status_resp.get("status")
-                        if status == "SUCCESS":
-                            st.session_state.execution_status = "SUCCESS"
-                            st.session_state.execution_time_ms = status_resp.get("execution_time_ms", 0)
-                            st.session_state.execution_diff = status_resp.get("diff_summary", {})
-                            st.session_state.ast_security_passed = True
-                            
-                            # Download output result dataframe
-                            dl_success, result_bytes, content_type = SheetPilotAPIClient.download_result(job_id)
-                            if dl_success and result_bytes:
-                                res_df = DataLoader.load_dataframe_from_bytes(result_bytes, "result.xlsx")
-                                st.session_state.execution_result_df = res_df
-                                st.session_state.result_bytes = result_bytes
-                                st.toast("Transformation executed successfully!", icon="🎉")
-                            else:
-                                st.error("Failed to download output result workbook.")
+                    while poll_count < max_retries:
+                        poll_success, status_resp = SheetPilotAPIClient.poll_job_status(job_id)
+                        if poll_success:
+                            final_status_resp = status_resp
+                            status = status_resp.get("status")
+                            if status in ["SUCCESS", "FAILED"]:
+                                break
+                        time.sleep(0.5)
+                        poll_count += 1
+                    
+                    status = final_status_resp.get("status")
+                    if status == "SUCCESS":
+                        st.session_state.execution_status = "SUCCESS"
+                        st.session_state.execution_time_ms = final_status_resp.get("execution_time_ms", 0)
+                        st.session_state.execution_diff = final_status_resp.get("diff_summary", {})
+                        st.session_state.ast_security_passed = True
+                        
+                        # Download output result dataframe
+                        dl_success, result_bytes, content_type = SheetPilotAPIClient.download_result(job_id)
+                        if dl_success and result_bytes:
+                            res_df = DataLoader.load_dataframe_from_bytes(result_bytes, "result.xlsx")
+                            st.session_state.execution_result_df = res_df
+                            st.session_state.result_bytes = result_bytes
+                            st.toast("Transformation executed successfully!", icon="🎉")
                         else:
-                            st.session_state.execution_status = "FAILED"
-                            st.session_state.execution_error = status_resp.get("error_log", "Execution error occurred.")
-                            st.session_state.ast_security_passed = False
+                            st.error("Failed to download output result workbook.")
                     else:
-                        st.error(f"Status polling failed: {status_resp.get('error')}")
-                else:
-                    st.error(f"Job execution trigger failed: {exec_resp.get('error')}")
+                        st.session_state.execution_status = "FAILED"
+                        err_msg = final_status_resp.get("error_log") or "Execution timed out or failed in sandbox."
+                        st.session_state.execution_error = err_msg
+                        st.session_state.ast_security_passed = False
+
 
     # ---------------------------------------------------------
     # STEP 5: EXECUTION RESULTS & WORKBOOK DOWNLOAD
