@@ -193,9 +193,9 @@ $ cd Capstone_Project
 $ docker-compose up --build -d
 
 [+] Running 4/4
- ✔ Container sheetpilot_postgres  Healthy
- ✔ Container sheetpilot_redis     Healthy
- ✔ Container sheetpilot_pgadmin   Started
+ ✔ Container sheetpilot_postgres  Healthy/Started
+ ✔ Container sheetpilot_redis     Healthy/Started
+ ✔ Container sheetpilot_pgadmin   Healthy/Started
 ```
 
 ---
